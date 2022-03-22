@@ -13,16 +13,16 @@ def todo(body):
         client = gspread.authorize(creds)
 
         # use multiple sheets if you want!
-        sheet_name = body.split('|')[1] #first field is sheet name in this case (remember to share each sheet)
-        print ("sheet name: ", sheet_name)
-        sheet = client.open(sheet_name).sheet1  # You could also put it in a different tab
+        # sheet_name = body.split('|')[1] #first field is sheet name in this case (remember to share each sheet)
+        # print ("sheet name: ", sheet_name)
+        sheet = client.open("Inbox").sheet1  # You could also put it in a different tab
 
 
         dt = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         today = datetime.datetime.now().strftime("%Y/%m/%d")
         toAdd = [dt]
 
-        for field in body.split('|'):
+        for field in body[5:].split('|'):
             print (field)
             toAdd.append(field)
 

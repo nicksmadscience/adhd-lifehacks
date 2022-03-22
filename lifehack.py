@@ -3,6 +3,7 @@
 import cgi
 from todo import *
 from rng import *
+from timer import *
 
 form = cgi.FieldStorage()
 
@@ -29,6 +30,8 @@ if appRequest == "Todo":
     print (todo(form.getvalue("Body")))
 elif appRequest == "RNG":
     print (rng(form.getvalue("Body")))
+elif appRequest == "Timer":
+    print (timer(form.getvalue("Body")))
 else:
     print ("App not found!")
 
