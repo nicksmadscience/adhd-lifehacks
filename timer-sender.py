@@ -1,17 +1,26 @@
 # this script will run once a minute (by way of cronjob).  if any active timers have expired,
 # this will send a notification to the user and mark said timer as expired.
 
-import gspread, json
+
+
+import gspread, json, traceback, argparse
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 from twilio.rest import Client
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--secretsfile", "-s", nargs='?', default="twilio-secrets.json")
+args = parser.parse_args()
+
 
 
 
 # Secrets file needs to include "twilio-sid" and "twilio-token"; you can grab these
 # from your Twilio console.  From and To numbers are also specified here so you're
 # not hard-coding your private numbers
-with open("twilio-secrets.json", "r") as secrets_file:
+with open(args.secretsfile, "r") as secrets_file:
     secrets = json.load(secrets_file)
 
 twilioClient = Client(secrets["twilio-sid"], secrets["twilio-token"])
@@ -65,5 +74,4 @@ for timer in timers:
             sendTwilioTextMessage(twilioClient, message)
             
             sheet.update_cell(timerRow, 4, "expired")
-            
-            
+        
