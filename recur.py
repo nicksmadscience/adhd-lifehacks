@@ -11,9 +11,6 @@ def recur(body):
     recurringEventLog = client.open("Recurring Event Log").sheet1
     datetime_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     
-    # Shorthand Event Name	   Datetime
-    recurringEventLog.append_row([event, datetime_string])
-    
     # next steps
     # cross reference the recurring event list
     list_eventName = 0
@@ -35,23 +32,32 @@ def recur(body):
     
     
     # see if there's a matching shorthand events name for today
-    recurringEventLogRow = 0
+    requirementMet = "?"
     for recurringEvent in recurringEvents:
-        recurringEventLogRow += 1
         
-        print (recurringEvent[list_shorthandEventName])
+        # print (recurringEvent[list_shorthandEventName])
         
         if recurringEvent[list_shorthandEventName] == event:
-            print ("HOLY CRAP EVENT FOUND")
+            
+            if recurringEventIsToday(recurringEvent[list_recurrence]):
+                print ("Hey congrats, you completed {taskfullname} for today!  Your streak is X days!".format(taskfullname = recurringEvent[list_eventName]))
+                
+                # if so, mark in log as daily requirement met
+                requirementMet = "met"
+            else:
+                print ("Good job! {taskfullname} was not due today, but I've logged your progress as having gone above and beyond!".format(taskfullname = recurringEvent[list_eventName]))
+                requirementMet = "extra"
+            
+ 
     
     
-    # if so, mark in log as daily requirement met
-        recurringEventLog.update_cell(recurringEventLogRow, log_requirementMet, "expired")
+    recurringEventLog.append_row([event, datetime_string, requirementMet])
+    
     
     
     # if it was met, respond to user saying it was met
     
     
     
-    return event
+    return ""
     
