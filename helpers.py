@@ -3,6 +3,19 @@
 import gspread, datetime
 from oauth2client.service_account import ServiceAccountCredentials
 from config import *
+from twilio.rest import Client
+
+
+
+def sendTwilioTextMessage(twClient, from_, to, message):
+    '''Allows you to send an SMS message from / to the number you specify,
+    using the power of Twilio SMS.'''
+    message = twClient.messages \
+        .create(
+                body = message,
+                from_ = from_,
+                to = to
+            )
 
 def openSheet():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
