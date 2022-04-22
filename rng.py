@@ -9,4 +9,3 @@ def rng(body):
     return "Your roll is: {roll}".format(roll = roll)
 
     # idea:  log your rolls in a spreadsheet for some weird reason!
-

@@ -9,33 +9,31 @@ from recur import *
 form = cgi.FieldStorage()
 
 print ("Content-Type: text/plain")
-print ("Cache-Control: no-cache")
 print ("")
 
+# First keyword in the message is the app
 appRequest = form.getvalue("Body").split(' ')[0]
-# print ("appRequest: ", appRequest)
 
-# appList = {'Todo': 'todo'}
-
-# print (todo("Todo Inbox|check test"))
-
-# for appName, appHandler in appList.items():
-#     print ("appName: ", appName)
-#     print ("appHandler: ", appHandler)
-#     if appRequest == appName:
-#         print ("match")
-#         print (appHandler(form.getvalue("Body")))
+def test(body):
+    return "Test successful!"
 
 
-if appRequest == "Todo":
-    print (todo(form.getvalue("Body")))
-elif appRequest == "RNG":
-    print (rng(form.getvalue("Body")))
-elif appRequest == "Timer":
-    print (timer(form.getvalue("Body")))
-elif appRequest == "Recur":
-    print (recur(form.getvalue("Body")))
-else:
+# Define our apps here
+appList = {'Todo': todo,
+           'RNG': rng,
+           'Timer': timer,
+           'Recur': recur,
+           'Test': test}
+
+
+# See if the app request is in the app list
+appFound = False
+for appName, appHandler in appList.items():
+    if appRequest == appName:
+        appFound = True
+        print (appHandler(form.getvalue("Body")))
+
+if appFound == False:
     print ("App not found!")
 
 

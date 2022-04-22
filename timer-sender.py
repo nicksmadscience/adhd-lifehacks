@@ -1,9 +1,9 @@
+#!/usr/bin/python3
+
 # this script will run once a minute (by way of cronjob).  if any active timers have expired,
 # this will send a notification to the user and mark said timer as expired.
 
-
-
-import gspread, json, traceback, argparse
+import gspread, json, argparse
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 from twilio.rest import Client
