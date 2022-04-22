@@ -40,8 +40,64 @@ def recurringEventIsToday(recurrenceString, today = datetime.datetime.now()):
     return False
 
 
-if __name__ == "__main__":
-    print ("Content-Type: text/html")
-    print ("Cache-Control: no-cache")
-    print ("")
-    print ("<html><body<h1>nunya bidness</h1></body></html>")
+def dailyTaskRoundup(recurringEvents, recurringLogged):
+    
+    list_eventName = 0
+    list_shorthandEventName = 1
+    list_recurrence = 2
+    list_morningReminder = 3
+    list_eveningReminder = 4
+    
+    log_shorthandEventName = 0
+    log_datetime = 1
+    log_requirementMet = 2
+    
+    
+    # print ("The following tasks are complete today...")
+    
+    completeTasks = []
+    todaysTasks = {}
+    
+    for event in recurringEvents:
+        # print (event)
+        if recurringEventIsToday(event[list_recurrence]):
+            todaysTasks[event[list_eventName]] = False
+        
+        # 1. see if there is an entry in the log matching today's date and this task
+        
+        for loggedEvent in recurringLogged:
+            if loggedEvent[log_datetime].split(' ')[0] == datetime.datetime.now().strftime("%Y/%m/%d"):
+                # print ("found matching event for today: ", loggedEvent)
+                
+                if loggedEvent[log_shorthandEventName] == event[list_shorthandEventName]:
+                    # print ("HOLY CRAP MATCH FOUND", loggedEvent, loggedEvent[log_shorthandEventName])
+                    if loggedEvent[log_shorthandEventName] not in completeTasks:
+                        todaysTasks[event[list_eventName]] = True
+    
+    return todaysTasks
+
+
+def streakFinder(event, recurringLogged):
+    
+    streak = 0
+    broken = False
+    for log in reversed(recurringLogged):
+        # print (log)
+        if log[0] == event:
+            if log[2] == "met" and broken == False:
+                streak += 1
+            elif log[2] == "missed":
+                broken = True
+                
+    return streak
+        
+        
+    
+
+
+
+# if __name__ == "__main__":
+#     print ("Content-Type: text/html")
+#     print ("Cache-Control: no-cache")
+#     print ("")
+#     print ("<html><body<h1>nunya bidness</h1></body></html>")
