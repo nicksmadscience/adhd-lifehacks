@@ -5,7 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 def todo(body):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/nick/adhd-lifehacks/client-secrets.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
     client = gspread.authorize(creds)
 
     sheet = client.open("Todo").sheet1

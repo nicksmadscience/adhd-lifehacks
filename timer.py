@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 def timer(body):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/adhd-lifehacks/client-secrets.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
     client = gspread.authorize(creds)
 
     minutes = int(body.split(' ')[1])
