@@ -6,24 +6,8 @@ from rng import *
 from timer import *
 from recur import *
 
-
-
-# form = cgi.FieldStorage()
-
-# print ("Content-Type: text/plain")
-# print ("")
-
-# # First keyword in the message is the app
-# appRequest = form.getvalue("Body").split(' ')[0]
-
-
-
-# first_name = request.args.get("firstname")
-
-
 def test(body):
     return "Test successful!"
-
 
 # Define our apps here
 appList = {'Todo': todo,
@@ -31,7 +15,6 @@ appList = {'Todo': todo,
            'Timer': timer,
            'Recur': recur,
            'Test': test}
-
 
 app = Flask(__name__)
 
@@ -50,9 +33,7 @@ def hello_world():
 
     if appFound == False:
         resp = make_response("App not found!", 404)
-        
-    resp.headers['ngrok-skip-browser-warning'] = 'true'
-    print (resp.data)
+
     return resp
 
 

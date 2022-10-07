@@ -9,7 +9,7 @@ form = cgi.FieldStorage()
 incomingText = form.getvalue("Body")
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/adhd-lifehacks/client-secrets.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
 client = gspread.authorize(creds)
 
 sheet = client.open("Todo").sheet1
