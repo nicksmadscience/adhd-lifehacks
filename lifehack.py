@@ -18,7 +18,7 @@ appList = {'Todo': todo,
 
 app = Flask(__name__)
 
-@app.route("/lifehack")
+@app.route("/")
 def hello_world():
     print (request.args["Body"])
 
@@ -33,7 +33,10 @@ def hello_world():
 
     if appFound == False:
         resp = make_response("App not found!", 404)
+        
+    resp.mimetype = "text/plain"
 
+    print (resp.data)
     return resp
 
 

@@ -9,8 +9,16 @@ def timer(body):
     creds = ServiceAccountCredentials.from_json_keyfile_name('client-secrets.json', scope)
     client = gspread.authorize(creds)
 
-    minutes = int(body.split(' ')[1])
-    message = body.split(' ', 2)[2]
+    try:
+        minutes = int(body.split(' ')[1])
+    except IndexError:
+        return "Please specify a time in minutes!  Syntax:  'Timer [minutes] [expiration message]"
+    
+    try:
+        message = body.split(' ', 2)[2]
+    except IndexError:
+        return "Please specify a message to be sent to you upon expiration!  Syntax:  'Timer [minutes] [expiration message]"
+    
     
     now = datetime.now()
     expirationTime = now + timedelta(minutes = minutes)
