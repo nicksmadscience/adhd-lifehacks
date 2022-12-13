@@ -5,13 +5,13 @@ from helpers import *
 
 
 
-def morning():
+def morning(gdrive_secrets):
     """The job of morning is to simply look at all tasks on deck today, and remind the user
     of said tasks."""
     
     out = "Good morning!  Here are the recurring tasks on deck for you today...\n"
     
-    client = openSheet()
+    client = openSheet(gdrive_secrets)
     
     list_eventName = 0
     list_shorthandEventName = 1
@@ -34,25 +34,27 @@ def morning():
     
     
 
-def evening():
+def evening(gdrive_secrets):
     """More than just looking at the tasks on deck today, we need to see which of them have
     not been fulfilled yet."""
     
     out = "Hey-o, eveningbot here!  Here's where today's recurring tasks stand...\n"
     
-    client = openSheet()
+    client = openSheet(gdrive_secrets)
     recurringEventList = client.open("Recurring Event List").sheet1
     recurringEvents = recurringEventList.get_all_values()
     recurringEventLog = client.open("Recurring Event Log").sheet1
     recurringLogged = recurringEventLog.get_all_values()
     
-    for task, status in dailyTaskRoundup(recurringEvents, recurringLogged).items():
+    roundup = dailyTaskRoundup(recurringEvents, recurringLogged).items()
+    for task, status in roundup:
         if status:
             out += "{task}: Complete\n".format(task = task)
         else:
             out += "{task}: Incomplete\n".format(task = task)
             
     print (out)
+    print (roundup)
     return out
         
         
@@ -69,11 +71,11 @@ def evening():
     
     
     
-def midnight():
+def midnight(gdrive_secrets):
     """Mark today's tasks as met or missed so that an accurate streak count can be made.""" 
     print ("it is (just before) midnight")
     
-    client = openSheet()
+    client = openSheet(gdrive_secrets)
     recurringEventList = client.open("Recurring Event List").sheet1
     recurringEvents = recurringEventList.get_all_values()
     recurringEventLog = client.open("Recurring Event Log").sheet1
@@ -93,13 +95,17 @@ def midnight():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--secretsfile", "-s", nargs='?', default="twilio-secrets.json",
+    parser.add_argument("--twiliosecrets", "-t", nargs='?', default="twilio-secrets.json",
                         help="Absolute path to the Twilio secrets file if running from, say, a Cron job.")
-    parser.add_argument("--botmode", "-b", nargs='?', default="twilio-secrets.json",
+    parser.add_argument("--gdrivesecrets", "-g", nargs='?', default="client-secrets.json",
+                        help="Absolute path to the Gdrive secrets file if running from, say, a Cron job.")
+    parser.add_argument("botmode", nargs='?', default="twilio-secrets.json",
                         help="'morning', 'evening', or 'midnight'.")
     args = parser.parse_args()
     
-    with open(args.secretsfile, "r") as secrets_file:
+    print (args)
+    
+    with open(args.twiliosecrets, "r") as secrets_file:
         secrets = json.load(secrets_file)
         print (secrets)
 
@@ -108,10 +114,10 @@ if __name__ == "__main__":
 
 
     if args.botmode == "morning":
-        sendTwilioTextMessage(twilioClient, secrets["from"], secrets["to"], morning())
+        sendTwilioTextMessage(twilioClient, secrets["from"], secrets["to"], morning(args.gdrivesecrets))
     elif args.botmode == "evening":
-        sendTwilioTextMessage(twilioClient, secrets["from"], secrets["to"], evening())
+        sendTwilioTextMessage(twilioClient, secrets["from"], secrets["to"], evening(args.gdrivesecrets))
     elif args.botmode == "midnight":
-        midnight() 
+        midnight(args.gdrivesecrets) 
     else:
         print ("Bot mode ('morning', 'evening', or 'midnight' must be specified using the --botmode argument!")

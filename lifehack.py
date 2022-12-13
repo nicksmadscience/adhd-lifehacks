@@ -22,13 +22,16 @@ app = Flask(__name__)
 def hello_world():
     print (request.args["Body"])
 
-    # Get the app handler function for the requested app
-    appHandler = appList.get(app)
+    appRequest = request.args["Body"].split(' ')[0]
 
-    # If the app handler function was found, call it and create a response
-    if appHandler:
-        resp = make_response(appHandler(request.args["Body"]), 200)
-    else:
+    # See if the app request is in the app list
+    appFound = False
+    for appName, appHandler in appList.items():
+        if appRequest == appName:
+            appFound = True
+            resp = make_response(appHandler(request.args["Body"]), 200)
+
+    if appFound == False:
         resp = make_response("App not found!", 404)
         
     resp.mimetype = "text/plain"

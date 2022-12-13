@@ -17,27 +17,23 @@ def sendTwilioTextMessage(twClient, from_, to, message):
                 to = to
             )
 
-def openSheet():
+def openSheet(gdrive_secrets):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(config_gdrive_secrets, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(gdrive_secrets, scope)
     return gspread.authorize(creds)
 
 
 def recurringEventIsToday(recurrenceString, today = datetime.datetime.now()):
-    
-    # daily
-    if recurrenceString.find("Daily") != -1:
-        return True
-    
-    # days of week
-    if recurrenceString.find(today.strftime("%A")) != -1:
-        return True
-    
-    # day of month
-    if recurrenceString.find(today.strftime("%d")) != -1:
-        return True
-    
-    return False
+    matches = [
+        "Daily",
+        today.strftime("%A"),   # day of week
+        today.strftime("%dst"), # day of month
+        today.strftime("%dnd"),
+        today.strftime("%drd"),
+        today.strftime("%dth"),
+    ]
+
+    return any(x in recurrenceString for x in matches)
 
 
 def dailyTaskRoundup(recurringEvents, recurringLogged):
@@ -67,10 +63,11 @@ def dailyTaskRoundup(recurringEvents, recurringLogged):
         
         for loggedEvent in recurringLogged:
             if loggedEvent[log_datetime].split(' ')[0] == datetime.datetime.now().strftime("%Y/%m/%d"):
-                # print ("found matching event for today: ", loggedEvent)
+                print ("found matching event for today: ", loggedEvent)
+                print (loggedEvent)
                 
                 if loggedEvent[log_shorthandEventName] == event[list_shorthandEventName]:
-                    # print ("HOLY CRAP MATCH FOUND", loggedEvent, loggedEvent[log_shorthandEventName])
+                    print ("HOLY CRAP MATCH FOUND", loggedEvent, loggedEvent[log_shorthandEventName])
                     if loggedEvent[log_shorthandEventName] not in completeTasks:
                         todaysTasks[event[list_eventName]] = True
     
