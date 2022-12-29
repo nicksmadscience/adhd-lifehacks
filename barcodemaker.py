@@ -3,6 +3,10 @@ from io import BytesIO
 from barcode import Code128
 from barcode.writer import SVGWriter
 
+import svgutils
+
+
+# Here you learn that a letter is 612 points wide and 792 points high.
 
 from reportlab.graphics import renderPDF
 from reportlab.pdfgen import canvas
@@ -27,7 +31,7 @@ args = parser.parse_args()
 def makeBarcode(string):
 	with open("temp.svg", "wb") as f:
 		Code128(string, writer=SVGWriter()).write(f)
-	return svg2rlg("temp.svg")
+	# return svg2rlg("temp.svg")
 
 def makeSerial(prefix, num, pad):
 	return "{prefix}{num:0{width}}".format(prefix=prefix, num=num, width=pad)
@@ -41,13 +45,15 @@ else:
 
 my_canvas = canvas.Canvas(output)
 
+
+
 for row in range(0, args.rows):
 	for col in range(0, args.cols):
 		ser = (row * args.cols) + col + args.start
 		str = (makeSerial(args.prefix, ser, args.pad))
-		bc = makeBarcode(str)
+		makeBarcode(str)
 		x = 0 + (col * args.hgap)
-		y = 750 - (row * args.vgap)
+		y = 760 - (row * args.vgap)
 		drawing = svg2rlg("temp.svg")
 		renderPDF.draw(drawing, my_canvas, x, y)
   
