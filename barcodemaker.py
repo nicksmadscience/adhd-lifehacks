@@ -23,7 +23,9 @@ parser.add_argument("--pad", help="Number of padded zeroes in serial", default=3
 parser.add_argument("--rows", default=10, type=int)
 parser.add_argument("--cols", default=5, type=int)
 parser.add_argument("--hgap", help="Number of horizontal units between barcodes to make for easy paper-cutting", default=120, type=int)
+parser.add_argument("--hoffset", help="Number of horizontal units from the left", default=30, type=int)
 parser.add_argument("--vgap", help="Number of vertical units between barcodes to make for easy paper-cutting", default=80, type=int)
+parser.add_argument("--voffset", help="Number of vertical units from the top", default=30, type=int)
 parser.add_argument("--output", help="Filename to write to", default="")
 
 args = parser.parse_args()
@@ -52,8 +54,8 @@ for row in range(0, args.rows):
 		ser = (row * args.cols) + col + args.start
 		str = (makeSerial(args.prefix, ser, args.pad))
 		makeBarcode(str)
-		x = 0 + (col * args.hgap)
-		y = 760 - (row * args.vgap)
+		x = args.hoffset + (col * args.hgap)
+		y = 760 - args.voffset - (row * args.vgap)
 		drawing = svg2rlg("temp.svg")
 		renderPDF.draw(drawing, my_canvas, x, y)
   
