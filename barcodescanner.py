@@ -57,14 +57,19 @@ def barcode(code):
 							if "LocationDatetime" in lastRowProperties:
 								locationDatetimeColumn = lastRowProperties.index("LocationDatetime") + 1  # hey I learned about .index() today
 								lastSheet.update_cell(lastCell.row, locationDatetimeColumn, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+						else:
+							subprocess.Popen(["afplay", "barcode-chime.wav"])
 			else:
-				# print ("does not have a storage field")
+				print ("Record found")
 				subprocess.Popen(["afplay", "barcode-chime.wav"])
     
 
    
 			lastCell = cell
 			lastSheet = targetSheet
+	else:
+		print ("Unknown record")
+		subprocess.Popen(["afplay", "barcode-unknown.wav"])
    
 	return out
    
