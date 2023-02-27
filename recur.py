@@ -4,7 +4,8 @@ from helpers import *
 import datetime
 
 def recur(body):
-    client = openSheet()
+    client = openSheet("client-secrets.json")
+
     recurringEventList = client.open("Recurring Event List").sheet1
     recurringEvents = recurringEventList.get_all_values()
     recurringEventLog = client.open("Recurring Event Log").sheet1
@@ -41,6 +42,7 @@ def recur(body):
         
         # see if there's a matching shorthand events name for today
         requirementMet = "?"
+        out = ""
         for recurringEvent in recurringEvents:
             
             # print (recurringEvent[list_shorthandEventName])
@@ -48,19 +50,20 @@ def recur(body):
             if recurringEvent[list_shorthandEventName] == event:
                 
                 if recurringEventIsToday(recurringEvent[list_recurrence]):
-                    print ("Hey congrats, you completed {taskfullname} for today!  Your streak is {streak} days!".format(
+                    out += "Hey congrats, you completed {taskfullname} for today!  Your streak is {streak} days!".format(
                         taskfullname = recurringEvent[list_eventName], 
-                        streak = streakFinder(recurringEvent[list_shorthandEventName], recurringLogged)))
+                        streak = streakFinder(recurringEvent[list_shorthandEventName], recurringLogged))
                     
                     # if so, mark in log as daily requirement met
                     requirementMet = "met"
                 else:
-                    print ("Good job! {taskfullname} was not due today, but I've logged your progress as having gone above and beyond!".format(taskfullname = recurringEvent[list_eventName]))
+                    out += "Good job! {taskfullname} was not due today, but I've logged your progress as having gone above and beyond!".format(taskfullname = recurringEvent[list_eventName])
                     requirementMet = "extra"
                 
         
         recurringEventLog.append_row([event, datetime_string, requirementMet])
         
 
-        return ""
+        print (out)
+        return out
     

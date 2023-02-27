@@ -5,7 +5,7 @@ from twilio.rest import Client
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--twiliosecrets", "-t", nargs='?', default="twilio-secrets.json")
-parser.add_argument("--clientsecrets", "-c", nargs='?', default="client-secrets.json")
+parser.add_argument("--gdrivesecrets", "-g", nargs='?', default="client-secrets.json")
 args = parser.parse_args()
 
 # Secrets file needs to include "twilio-sid" and "twilio-token"; you can grab these
